@@ -1,0 +1,72 @@
+{
+  "runtimeTarget": {
+    "name": ".NETStandard,Version=v2.0/",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETStandard,Version=v2.0": {},
+    ".NETStandard,Version=v2.0/": {
+      "NoMoreImpassableTiles/1.0.0": {
+        "dependencies": {
+          "Krafs.Rimworld.Ref": "1.4.3704",
+          "Lib.Harmony": "2.2.2",
+          "NETStandard.Library": "2.0.3"
+        },
+        "runtime": {
+          "NoMoreImpassableTiles.dll": {}
+        }
+      },
+      "Krafs.Rimworld.Ref/1.4.3704": {},
+      "Lib.Harmony/2.2.2": {
+        "runtime": {
+          "lib/net45/0Harmony.dll": {
+            "assemblyVersion": "2.2.2.0",
+            "fileVersion": "2.2.2.0"
+          }
+        }
+      },
+      "Microsoft.NETCore.Platforms/1.1.0": {},
+      "NETStandard.Library/2.0.3": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0"
+        }
+      }
+    }
+  },
+  "libraries": {
+    "NoMoreImpassableTiles/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Krafs.Rimworld.Ref/1.4.3704": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-INLy9Od0/msMfI9LROUaueV3QL8mnIB18xRjei5/Sw7HAYaw10emQKzts7la6AfSoFmB8mEY20bLVTnXNdeU7g==",
+      "path": "krafs.rimworld.ref/1.4.3704",
+      "hashPath": "krafs.rimworld.ref.1.4.3704.nupkg.sha512"
+    },
+    "Lib.Harmony/2.2.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-70KvWz+DiUELxafsYL/LHxA/jH3PDWeApLo/VwtnrpTvRWQ/eUdPfS/l5funmhZWOy41QXw6UjVv+6C57Nx77A==",
+      "path": "lib.harmony/2.2.2",
+      "hashPath": "lib.harmony.2.2.2.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Platforms/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
+      "path": "microsoft.netcore.platforms/1.1.0",
+      "hashPath": "microsoft.netcore.platforms.1.1.0.nupkg.sha512"
+    },
+    "NETStandard.Library/2.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-st47PosZSHrjECdjeIzZQbzivYBJFv6P2nv4cj2ypdI204DO+vZ7l5raGMiX4eXMJ53RfOIg+/s4DHVZ54Nu2A==",
+      "path": "netstandard.library/2.0.3",
+      "hashPath": "netstandard.library.2.0.3.nupkg.sha512"
+    }
+  }
+}

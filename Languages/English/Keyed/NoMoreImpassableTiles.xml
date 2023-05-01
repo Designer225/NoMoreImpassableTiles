@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+    <NoMoreImpassableTiles>No More Impassable Tiles</NoMoreImpassableTiles>
+
+    <NoMoreImpassableTiles.overrideWorldPathfinding>Override World Pathfinding</NoMoreImpassableTiles.overrideWorldPathfinding>
+    <NoMoreImpassableTiles.movementDifficulty>Impassable Tile Movement Difficulty</NoMoreImpassableTiles.movementDifficulty>
+    <NoMoreImpassableTiles.allowImpassableSettlement>Allow Settlement in Impassable Tiles</NoMoreImpassableTiles.allowImpassableSettlement>
+    <NoMoreImpassableTiles.miningSiteAllowImpassable>Allow Mining Sites to Spawn In Impassable Tiles (Requires Ideology)</NoMoreImpassableTiles.miningSiteAllowImpassable>
+</LanguageData>
