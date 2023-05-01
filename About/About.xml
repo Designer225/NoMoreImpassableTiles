@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+    <name>No More Impassable Tiles</name>
+    <author>Designer225</author>
+    <url>www.anything.com</url>
+    <packageId>designer225.rimworld.nomoreimpassabletiles</packageId>
+    <supportedVersions>
+		  <li>1.4</li>
+    </supportedVersions>
+
+    <description>Makes impassable tiles actually usable.</description>
+
+    <modDependencies>
+    <!-- Using hugslib as an example here. -->
+        <li>
+            <packageId>brrainz.harmony</packageId>
+            <displayName>Harmony</displayName>
+            <downloadUrl>https://github.com/pardeike/HarmonyRimWorld</downloadUrl>
+            <steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077</steamWorkshopUrl>
+        </li>
+    </modDependencies>
+
+    <loadAfter>
+        <li>brrainz.harmony</li>
+    </loadAfter>
+</ModMetaData>
