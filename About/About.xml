@@ -3,7 +3,7 @@
     <name>No More Impassable Tiles</name>
     <author>Designer225</author>
     <url>www.anything.com</url>
-    <packageId>designer225.rimworld.nomoreimpassabletiles</packageId>
+    <packageId>designer225.nomoreimpassabletiles</packageId>
     <supportedVersions>
 		  <li>1.4</li>
     </supportedVersions>

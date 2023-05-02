@@ -3,7 +3,12 @@
     <NoMoreImpassableTiles>No More Impassable Tiles</NoMoreImpassableTiles>
 
     <NoMoreImpassableTiles.overrideWorldPathfinding>Override World Pathfinding</NoMoreImpassableTiles.overrideWorldPathfinding>
+    <NoMoreImpassableTiles.overrideWorldPathfinding.tooltip>Enable to allow movement through impassable tiles.</NoMoreImpassableTiles.overrideWorldPathfinding.tooltip>
     <NoMoreImpassableTiles.movementDifficulty>Impassable Tile Movement Difficulty</NoMoreImpassableTiles.movementDifficulty>
     <NoMoreImpassableTiles.allowImpassableSettlement>Allow Settlement in Impassable Tiles</NoMoreImpassableTiles.allowImpassableSettlement>
+    <NoMoreImpassableTiles.allowImpassableSettlement.tooltip>Enable to allow settlements to be founded in impassable tiles (biome permitting).</NoMoreImpassableTiles.allowImpassableSettlement.tooltip>
     <NoMoreImpassableTiles.miningSiteAllowImpassable>Allow Mining Sites to Spawn In Impassable Tiles (Requires Ideology)</NoMoreImpassableTiles.miningSiteAllowImpassable>
+    <NoMoreImpassableTiles.miningSiteAllowImpassable.tooltip>Enable to allow mining sites to spawn in impossible tiles (biome permitting). (Requires Ideology)</NoMoreImpassableTiles.miningSiteAllowImpassable.tooltip>
+    <NoMoreImpassableTiles.debug>Debug Output</NoMoreImpassableTiles.debug>
+    <NoMoreImpassableTiles.debug.tooltip>Enable to print debug output to Player.log, including Harmony patch output.</NoMoreImpassableTiles.debug.tooltip>
 </LanguageData>
