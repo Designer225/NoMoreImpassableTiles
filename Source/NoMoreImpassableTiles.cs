@@ -20,24 +20,24 @@ namespace NoMoreImpassableTiles
             Listing_Standard listingStandard = new Listing_Standard();
             listingStandard.Begin(inRect);
             listingStandard.CheckboxLabeled(
-                "NoMoreImpassableTiles.overrideWorldPathfinding".Translate(),
+                "NoMoreImpassableTiles.OverrideWorldPathfinding".Translate(),
                 ref settings.OverrideWorldPathfinding,
-                "NoMoreImpassableTiles.overrideWorldPathfinding.tooltip".Translate());
+                "NoMoreImpassableTiles.OverrideWorldPathfinding.Tooltip".Translate());
             if (settings.OverrideWorldPathfinding)
                 listingStandard.TextFieldNumericLabeled(
-                    "NoMoreImpassableTiles.movementDifficulty".Translate(),
+                    "NoMoreImpassableTiles.MovementDifficulty".Translate(),
                     ref settings.MovementDifficulty, ref movementDifficultyBuffer, 0.1f, 1000f);
-            listingStandard.CheckboxLabeled("NoMoreImpassableTiles.allowImpassableSettlement".Translate(),
+            listingStandard.CheckboxLabeled("NoMoreImpassableTiles.AllowImpassableSettlement".Translate(),
                 ref settings.AllowImpassableSettlement,
-                "NoMoreImpassableTiles.allowImpassableSettlement.tooltip".Translate());
-            listingStandard.CheckboxLabeled("NoMoreImpassableTiles.miningSiteAllowImpassable".Translate(),
+                "NoMoreImpassableTiles.AllowImpassableSettlement.Tooltip".Translate());
+            listingStandard.CheckboxLabeled("NoMoreImpassableTiles.MiningSiteAllowImpassable".Translate(),
                 ref settings.MiningSiteAllowImpassable,
-                "NoMoreImpassableTiles.miningSiteAllowImpassable.tooltip".Translate());
+                "NoMoreImpassableTiles.MiningSiteAllowImpassable.Tooltip".Translate());
             listingStandard.GapLine();
             listingStandard.CheckboxLabeled(
-                "NoMoreImpassableTiles.debug".Translate(),
+                "NoMoreImpassableTiles.Debug".Translate(),
                 ref settings.Debug,
-                "NoMoreImpassableTiles.debug.tooltip".Translate());
+                "NoMoreImpassableTiles.Debug.Tooltip".Translate());
             listingStandard.End();
             base.DoSettingsWindowContents(inRect);
         }
