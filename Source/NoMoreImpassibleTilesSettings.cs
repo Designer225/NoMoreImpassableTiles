@@ -13,14 +13,14 @@ namespace NoMoreImpassableTiles
         private const bool DefaultMiningSiteAllowImpassable = true;
         private const bool DefaultDebug = false;
 
-        private static NoMoreImpassibleTilesSettings instance;
+        private static NoMoreImpassibleTilesSettings m_instance;
         
         public static NoMoreImpassibleTilesSettings Instance
         {
             get
             {
-                instance = LoadedModManager.GetMod<NoMoreImpassableTiles>().GetSettings<NoMoreImpassibleTilesSettings>();
-                return instance;
+                m_instance = LoadedModManager.GetMod<NoMoreImpassableTiles>().GetSettings<NoMoreImpassibleTilesSettings>();
+                return m_instance;
             }
         }
 
