@@ -144,16 +144,16 @@ namespace NoMoreImpassableTiles
             return 0f;
         }
 
-        static bool Prefix(ref float __result, int tile, bool perceivedStatic, int? ticksAbs, StringBuilder explanation)
+        [HarmonyPriority(Priority.First)]
+        static void Postfix(ref float __result, int tile, bool perceivedStatic, int? ticksAbs, StringBuilder explanation)
         {
             Tile tile2 = Find.WorldGrid[tile];
             if (NoMoreImpassibleTilesSettings.Instance.OverrideWorldPathfinding
                 && (tile2.biome.impassable || tile2.hilliness == Hilliness.Impassable))
             {
-                __result = OriginalMethod(tile, perceivedStatic, ticksAbs, explanation);
-                return false;
+                var newValue = OriginalMethod(tile, perceivedStatic, ticksAbs, explanation);
+                __result = newValue < __result ? newValue : __result;
             }
-            return true;
         }
     }
 
@@ -221,15 +221,14 @@ namespace NoMoreImpassableTiles
             return false;
         }
 
-        static bool Prefix(ref bool __result, int tile, StringBuilder reason)
+        [HarmonyPriority(Priority.First)]
+        static void Postfix(ref bool __result, int tile, StringBuilder reason)
         {
             Tile tile2 = Find.WorldGrid[tile];
             if (NoMoreImpassibleTilesSettings.Instance.AllowImpassableSettlement && tile2.hilliness == Hilliness.Impassable)
             {
-                __result = OriginalMethod(tile, reason);
-                return false;
+                __result = __result ? __result : OriginalMethod(tile, reason);
             }
-            return true;
         }
     }
 
