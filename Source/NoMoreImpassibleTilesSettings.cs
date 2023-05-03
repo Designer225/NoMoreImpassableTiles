@@ -12,17 +12,8 @@ namespace NoMoreImpassableTiles
         private const bool DefaultAllowImpassableSettlement = true;
         private const bool DefaultMiningSiteAllowImpassable = true;
         private const bool DefaultDebug = false;
-
-        private static NoMoreImpassibleTilesSettings m_instance;
         
-        public static NoMoreImpassibleTilesSettings Instance
-        {
-            get
-            {
-                m_instance = LoadedModManager.GetMod<NoMoreImpassableTiles>().GetSettings<NoMoreImpassibleTilesSettings>();
-                return m_instance;
-            }
-        }
+        public static NoMoreImpassibleTilesSettings Instance => LoadedModManager.GetMod<NoMoreImpassableTiles>().GetSettings<NoMoreImpassibleTilesSettings>();
 
         private bool m_overrideWorldPathfinding = DefaultOverrideWorldPathfinding;
         public ref bool OverrideWorldPathfinding => ref m_overrideWorldPathfinding;
