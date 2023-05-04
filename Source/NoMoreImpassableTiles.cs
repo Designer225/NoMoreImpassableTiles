@@ -6,13 +6,13 @@ namespace NoMoreImpassableTiles
 {
     public sealed class NoMoreImpassableTiles : Mod
     {
-        NoMoreImpassibleTilesSettings settings;
+        NoMoreImpassableTilesSettings settings;
 
         private string movementDifficultyBuffer;
 
         public NoMoreImpassableTiles(ModContentPack content) : base(content)
         {
-            settings = GetSettings<NoMoreImpassibleTilesSettings>();
+            settings = GetSettings<NoMoreImpassableTilesSettings>();
         }
 
         public override void DoSettingsWindowContents(Rect inRect)

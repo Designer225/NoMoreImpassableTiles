@@ -25,7 +25,7 @@ namespace NoMoreImpassableTiles
     {
         static void Postfix(ref float __result, Hilliness hilliness)
         {
-            if (hilliness == Hilliness.Impassable) __result = NoMoreImpassibleTilesSettings.Instance.MovementDifficulty;
+            if (hilliness == Hilliness.Impassable) __result = NoMoreImpassableTilesSettings.Instance.MovementDifficulty;
         }
     }
 
@@ -80,7 +80,7 @@ namespace NoMoreImpassableTiles
                     list[startIndex].WithLabels(labels);
 
                     Log.Message("[NoMoreImpassableTiles] Reverse patching WorldPathGrid.CalculatedMovementDifficultyAt(): removed impassable tile movement blocker");
-                    if (NoMoreImpassibleTilesSettings.Instance.Debug)
+                    if (NoMoreImpassableTilesSettings.Instance.Debug)
                     {
                         StringBuilder sb = new StringBuilder();
                         foreach (var code in list)
@@ -121,14 +121,14 @@ namespace NoMoreImpassableTiles
                     // patching code in
                     list.InsertRange(startIndex, new CodeInstruction[]
                     {
-                        new CodeInstruction(OpCodes.Call, AccessTools.PropertyGetter(typeof(NoMoreImpassibleTilesSettings), nameof(NoMoreImpassibleTilesSettings.Instance))),
-                        new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(NoMoreImpassibleTilesSettings), nameof(NoMoreImpassibleTilesSettings.MovementDifficulty))),
+                        new CodeInstruction(OpCodes.Call, AccessTools.PropertyGetter(typeof(NoMoreImpassableTilesSettings), nameof(NoMoreImpassableTilesSettings.Instance))),
+                        new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(NoMoreImpassableTilesSettings), nameof(NoMoreImpassableTilesSettings.MovementDifficulty))),
                         new CodeInstruction(OpCodes.Ldind_R4)
                     });
                     list[startIndex].WithLabels(labels);
 
                     Log.Message("[NoMoreImpassableTiles] Reverse patching WorldPathGrid.CalculatedMovementDifficultyAt(): replaced movement offset for impassable tiles");
-                    if (NoMoreImpassibleTilesSettings.Instance.Debug)
+                    if (NoMoreImpassableTilesSettings.Instance.Debug)
                     {
                         StringBuilder sb = new StringBuilder();
                         foreach (var code in list)
@@ -148,7 +148,7 @@ namespace NoMoreImpassableTiles
         static void Postfix(ref float __result, int tile, bool perceivedStatic, int? ticksAbs, StringBuilder explanation)
         {
             Tile tile2 = Find.WorldGrid[tile];
-            if (NoMoreImpassibleTilesSettings.Instance.OverrideWorldPathfinding
+            if (NoMoreImpassableTilesSettings.Instance.OverrideWorldPathfinding
                 && (tile2.biome.impassable || tile2.hilliness == Hilliness.Impassable))
             {
                 var newValue = OriginalMethod(tile, perceivedStatic, ticksAbs, explanation);
@@ -205,7 +205,7 @@ namespace NoMoreImpassableTiles
                     list[startIndex].WithLabels(labels);
 
                     Log.Message("[NoMoreImpassableTiles] Reverse patching TileFinder.IsValidTileForNewSettlement(): removed impassable tile settlement blocker");
-                    if (NoMoreImpassibleTilesSettings.Instance.Debug)
+                    if (NoMoreImpassableTilesSettings.Instance.Debug)
                     {
                         StringBuilder sb = new StringBuilder();
                         foreach (var code in list)
@@ -225,7 +225,7 @@ namespace NoMoreImpassableTiles
         static void Postfix(ref bool __result, int tile, StringBuilder reason)
         {
             Tile tile2 = Find.WorldGrid[tile];
-            if (NoMoreImpassibleTilesSettings.Instance.AllowImpassableSettlement && tile2.hilliness == Hilliness.Impassable)
+            if (NoMoreImpassableTilesSettings.Instance.AllowImpassableSettlement && tile2.hilliness == Hilliness.Impassable)
             {
                 __result = __result ? __result : OriginalMethod(tile, reason);
             }
@@ -237,7 +237,7 @@ namespace NoMoreImpassableTiles
     {
         static void Postfix(ref bool __result, int tile)
         {
-            if (NoMoreImpassibleTilesSettings.Instance.MiningSiteAllowImpassable)
+            if (NoMoreImpassableTilesSettings.Instance.MiningSiteAllowImpassable)
                 __result = Find.WorldGrid[tile].hilliness >= Hilliness.LargeHills;
         }
     }

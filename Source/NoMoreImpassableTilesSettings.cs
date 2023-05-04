@@ -5,15 +5,23 @@ using Verse;
 
 namespace NoMoreImpassableTiles
 {
-    public sealed class NoMoreImpassibleTilesSettings : ModSettings
+    public sealed class NoMoreImpassableTilesSettings : ModSettings
     {
         private const bool DefaultOverrideWorldPathfinding = true;
         private const float DefaultMovementDifficulty = 5f;
         private const bool DefaultAllowImpassableSettlement = true;
         private const bool DefaultMiningSiteAllowImpassable = true;
         private const bool DefaultDebug = false;
-        
-        public static NoMoreImpassibleTilesSettings Instance => LoadedModManager.GetMod<NoMoreImpassableTiles>().GetSettings<NoMoreImpassibleTilesSettings>();
+
+        private static NoMoreImpassableTilesSettings instance;
+        public static NoMoreImpassableTilesSettings Instance
+        {
+            get
+            {
+                if (instance == default) instance = LoadedModManager.GetMod<NoMoreImpassableTiles>().GetSettings<NoMoreImpassableTilesSettings>();
+                return instance;
+            }
+        }
 
         private bool m_overrideWorldPathfinding = DefaultOverrideWorldPathfinding;
         public ref bool OverrideWorldPathfinding => ref m_overrideWorldPathfinding;
@@ -32,11 +40,11 @@ namespace NoMoreImpassableTiles
 
         public override void ExposeData()
         {
-            Scribe_Values.Look(ref m_overrideWorldPathfinding, "overrideWorldPathfinding", DefaultOverrideWorldPathfinding);
-            Scribe_Values.Look(ref m_movementDifficulty, "movementDifficulty", DefaultMovementDifficulty);
-            Scribe_Values.Look(ref m_allowImpassableSettlement, "allowImpassableSettlement", DefaultAllowImpassableSettlement);
-            Scribe_Values.Look(ref m_miningSiteAllowImpassable, "miningSiteAllowImpassable", DefaultMiningSiteAllowImpassable);
-            Scribe_Values.Look(ref m_debug, "debug", DefaultDebug);
+            Scribe_Values.Look(ref m_overrideWorldPathfinding, "OverrideWorldPathfinding", DefaultOverrideWorldPathfinding);
+            Scribe_Values.Look(ref m_movementDifficulty, "MovementDifficulty", DefaultMovementDifficulty);
+            Scribe_Values.Look(ref m_allowImpassableSettlement, "AllowImpassableSettlement", DefaultAllowImpassableSettlement);
+            Scribe_Values.Look(ref m_miningSiteAllowImpassable, "MiningSiteAllowImpassable", DefaultMiningSiteAllowImpassable);
+            Scribe_Values.Look(ref m_debug, "Debug", DefaultDebug);
             base.ExposeData();
         }
     }
