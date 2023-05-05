@@ -23,6 +23,8 @@ namespace NoMoreImpassableTiles
     [HarmonyPatch(typeof(WorldPathGrid), "HillinessMovementDifficultyOffset")]
     internal static class WorldPathGrid_HillinessMovementDifficultyOffsetPatch
     {
+        static void Prepare() { Log.Message("[RemoveDevStageLimit] Patching WorldPathGrid.HillinessMovementDifficultyOffset() with a postfix"); }
+
         static void Postfix(ref float __result, Hilliness hilliness)
         {
             if (hilliness == Hilliness.Impassable) __result = NoMoreImpassableTilesSettings.Instance.MovementDifficulty;
@@ -144,6 +146,8 @@ namespace NoMoreImpassableTiles
             return 0f;
         }
 
+        static void Prepare() { Log.Message("[RemoveDevStageLimit] Patching WorldPathGrid.CalculatedMovementDifficultyAt() with a postfix"); }
+
         [HarmonyPriority(Priority.First)]
         static void Postfix(ref float __result, int tile, bool perceivedStatic, int? ticksAbs, StringBuilder explanation)
         {
@@ -221,6 +225,8 @@ namespace NoMoreImpassableTiles
             return false;
         }
 
+        static void Prepare() { Log.Message("[RemoveDevStageLimit] Patching TileFinder.IsValidTileForNewSettlement() with a postfix"); }
+
         [HarmonyPriority(Priority.First)]
         static void Postfix(ref bool __result, int tile, StringBuilder reason)
         {
@@ -235,6 +241,8 @@ namespace NoMoreImpassableTiles
     [HarmonyPatch(typeof(SitePartWorker_WorkSite_Mining), nameof(SitePartWorker_WorkSite_Mining.CanSpawnOn))]
     internal static class SitePartWorker_WorkSite_Mining_CanSpawnOnPatch
     {
+        static void Prepare() { Log.Message("[RemoveDevStageLimit] Patching SitePartWorker_WorkSite_Mining.CanSpawnOn() with a postfix"); }
+
         static void Postfix(ref bool __result, int tile)
         {
             if (NoMoreImpassableTilesSettings.Instance.MiningSiteAllowImpassable)
