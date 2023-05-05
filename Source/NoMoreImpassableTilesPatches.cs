@@ -16,7 +16,7 @@ namespace NoMoreImpassableTiles
     {
         static NoMoreImpassableTilesPatches()
         {
-            new Harmony("designer225.nomoreimpassabletiles").PatchAll();
+            new Harmony("Designer225.NoMoreImpassableTiles").PatchAll();
         }
     }
 

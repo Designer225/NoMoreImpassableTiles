@@ -6,14 +6,10 @@ namespace NoMoreImpassableTiles
 {
     public sealed class NoMoreImpassableTiles : Mod
     {
-        NoMoreImpassableTilesSettings settings;
 
         private string movementDifficultyBuffer;
 
-        public NoMoreImpassableTiles(ModContentPack content) : base(content)
-        {
-            settings = GetSettings<NoMoreImpassableTilesSettings>();
-        }
+        public NoMoreImpassableTiles(ModContentPack content) : base(content) { }
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
@@ -21,30 +17,27 @@ namespace NoMoreImpassableTiles
             listingStandard.Begin(inRect);
             listingStandard.CheckboxLabeled(
                 "NoMoreImpassableTiles.OverrideWorldPathfinding".Translate(),
-                ref settings.OverrideWorldPathfinding,
+                ref NoMoreImpassableTilesSettings.Instance.OverrideWorldPathfinding,
                 "NoMoreImpassableTiles.OverrideWorldPathfinding.Tooltip".Translate());
-            if (settings.OverrideWorldPathfinding)
+            if (NoMoreImpassableTilesSettings.Instance.OverrideWorldPathfinding)
                 listingStandard.TextFieldNumericLabeled(
                     "NoMoreImpassableTiles.MovementDifficulty".Translate(),
-                    ref settings.MovementDifficulty, ref movementDifficultyBuffer, 0.1f, 1000f);
+                    ref NoMoreImpassableTilesSettings.Instance.MovementDifficulty, ref movementDifficultyBuffer, 0.1f, 1000f);
             listingStandard.CheckboxLabeled("NoMoreImpassableTiles.AllowImpassableSettlement".Translate(),
-                ref settings.AllowImpassableSettlement,
+                ref NoMoreImpassableTilesSettings.Instance.AllowImpassableSettlement,
                 "NoMoreImpassableTiles.AllowImpassableSettlement.Tooltip".Translate());
             listingStandard.CheckboxLabeled("NoMoreImpassableTiles.MiningSiteAllowImpassable".Translate(),
-                ref settings.MiningSiteAllowImpassable,
+                ref NoMoreImpassableTilesSettings.Instance.MiningSiteAllowImpassable,
                 "NoMoreImpassableTiles.MiningSiteAllowImpassable.Tooltip".Translate());
             listingStandard.GapLine();
             listingStandard.CheckboxLabeled(
                 "NoMoreImpassableTiles.Debug".Translate(),
-                ref settings.Debug,
+                ref NoMoreImpassableTilesSettings.Instance.Debug,
                 "NoMoreImpassableTiles.Debug.Tooltip".Translate());
             listingStandard.End();
             base.DoSettingsWindowContents(inRect);
         }
 
-        public override string SettingsCategory()
-        {
-            return "NoMoreImpassableTiles".Translate();
-        }
+        public override string SettingsCategory() => "NoMoreImpassableTiles".Translate();
     }
 }
