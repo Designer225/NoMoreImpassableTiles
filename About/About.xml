@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-    <name>No More Impassable Tiles</name>
+    <name>Passable Impassable Tiles</name>
     <author>Designer225</author>
-    <url>www.anything.com</url>
+    <url>https://github.com/Designer225/NoMoreImpassableTiles</url>
     <packageId>Designer225.NoMoreImpassableTiles</packageId>
     <supportedVersions>
 		  <li>1.4</li>
