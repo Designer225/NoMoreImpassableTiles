@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using UnityEngine;
 using Verse;
 
 namespace NoMoreImpassableTiles
@@ -20,143 +21,32 @@ namespace NoMoreImpassableTiles
         }
     }
 
-    [HarmonyPatch(typeof(WorldPathGrid), "HillinessMovementDifficultyOffset")]
-    internal static class WorldPathGrid_HillinessMovementDifficultyOffsetPatch
-    {
-        static void Prepare() { Log.Message("[NoMoreImpassableTiles] Patching WorldPathGrid.HillinessMovementDifficultyOffset() with a postfix"); }
-
-        static void Postfix(ref float __result, Hilliness hilliness)
-        {
-            if (hilliness == Hilliness.Impassable) __result = NoMoreImpassableTilesSettings.Instance.MovementDifficulty;
-        }
-    }
-
     [HarmonyPatch(typeof(WorldPathGrid), nameof(WorldPathGrid.CalculatedMovementDifficultyAt))]
     internal static class WorldPathGrid_CalculatedMovementDifficultyAtPatch
     {
-        [HarmonyReversePatch]
-        static float OriginalMethod(int tile, bool perceivedStatic, int? tickAbs = null, StringBuilder explanation = null)
-        {
-            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-            {
-                var list = instructions.ToList();
-
-                // remove code that actually makes tiles impassable
-                int startIndex = -1, endIndex = -1;
-                int stage = 0;
-                for (int i = 0; i < list.Count; i++)
-                {
-                    if (stage == 0 && list[i].opcode == OpCodes.Ldloc_0)
-                    {
-                        startIndex = i;
-                        stage++;
-                    }
-                    else if ((stage == 1 || stage == 2 || stage == 5) && list[i].opcode == OpCodes.Ldfld) stage++;
-                    else if (stage == 3 && list[i].opcode == OpCodes.Brtrue_S) stage++;
-                    else if (stage == 4 && list[i].opcode == OpCodes.Ldloc_0) stage++;
-                    else if (stage == 6 && list[i].opcode == OpCodes.Ldc_I4_5) stage++;
-                    else if (stage == 7 && list[i].opcode == OpCodes.Bne_Un_S) stage++;
-                    else if ((stage == 8 || stage == 10) && list[i].opcode == OpCodes.Ldarg_3) stage++;
-                    else if (stage == 9 && list[i].opcode == OpCodes.Brfalse_S) stage++;
-                    else if (stage == 11 && list[i].opcode == OpCodes.Ldstr) stage++;
-                    else if ((stage == 12 || stage == 13) && list[i].opcode == OpCodes.Call) stage++;
-                    else if (stage == 14 && list[i].opcode == OpCodes.Callvirt) stage++;
-                    else if (stage == 15 && list[i].opcode == OpCodes.Pop) stage++;
-                    else if (stage == 16 && list[i].opcode == OpCodes.Ldc_R4) stage++;
-                    else if (stage == 17 && list[i].opcode == OpCodes.Ret)
-                    {
-                        endIndex = i + 1; // all of the code needs to be removed, so must include + 1 so that ret is deleted as well
-                        break;
-                    }
-                    else
-                    {
-                        startIndex = -1;
-                        stage = 0;
-                    }
-                }
-
-                if (startIndex > -1 && endIndex > -1)
-                {
-                    var labels = list[startIndex].ExtractLabels();
-                    list.RemoveRange(startIndex, endIndex - startIndex);
-                    list[startIndex].WithLabels(labels);
-
-                    Log.Message("[NoMoreImpassableTiles] Reverse patching WorldPathGrid.CalculatedMovementDifficultyAt(): removed impassable tile movement blocker");
-                    if (NoMoreImpassableTilesSettings.Instance.Debug)
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        foreach (var code in list)
-                            sb.Append($"({code.labels.Join(x => x.GetHashCode().ToString())}) {code.opcode} {(code.operand is Label lb ? lb.GetHashCode() : code.operand)}\n");
-                        Log.Message("[NoMoreImpassableTiles] IL Code:\n" + sb);
-                    }
-                }
-
-                // replace movement offset with settings value
-                startIndex = -1;
-                endIndex = -1;
-                stage = 0;
-                for (int i = 0; i < list.Count; i++)
-                {
-                    if (stage == 0 && list[i].opcode == OpCodes.Ldloc_0)
-                    {
-                        startIndex = i;
-                        stage++;
-                    }
-                    else if (stage == 1 && list[i].opcode == OpCodes.Ldfld) stage++;
-                    else if (stage == 2 && list[i].opcode == OpCodes.Call) stage++;
-                    else if (stage == 3 && list[i].opcode == OpCodes.Stloc_1)
-                    {
-                        endIndex = i; // we need stloc.1, so this will be excluded
-                        break;
-                    }
-                    else
-                    {
-                        startIndex = -1;
-                        stage = 0;
-                    }
-                }
-
-                if (startIndex > -1 && endIndex > -1)
-                {
-                    var labels = list[startIndex].ExtractLabels();
-                    list.RemoveRange(startIndex, endIndex - startIndex);
-                    // patching code in
-                    list.InsertRange(startIndex, new CodeInstruction[]
-                    {
-                        new CodeInstruction(OpCodes.Call, AccessTools.PropertyGetter(typeof(NoMoreImpassableTilesSettings), nameof(NoMoreImpassableTilesSettings.Instance))),
-                        new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(NoMoreImpassableTilesSettings), nameof(NoMoreImpassableTilesSettings.MovementDifficulty))),
-                        new CodeInstruction(OpCodes.Ldind_R4)
-                    });
-                    list[startIndex].WithLabels(labels);
-
-                    Log.Message("[NoMoreImpassableTiles] Reverse patching WorldPathGrid.CalculatedMovementDifficultyAt(): replaced movement offset for impassable tiles");
-                    if (NoMoreImpassableTilesSettings.Instance.Debug)
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        foreach (var code in list)
-                            sb.Append($"({code.labels.Join(x => x.GetHashCode().ToString())}) {code.opcode} {(code.operand is Label lb ? lb.GetHashCode() : code.operand)}\n");
-                        Log.Message("[NoMoreImpassableTiles] IL Code:\n" + sb);
-                    }
-                }
-
-                return list.AsEnumerable();
-            }
-
-            _ = Transpiler(null);
-            return 0f;
-        }
-
         static void Prepare() { Log.Message("[NoMoreImpassableTiles] Patching WorldPathGrid.CalculatedMovementDifficultyAt() with a postfix"); }
 
         [HarmonyPriority(Priority.First)]
-        static void Postfix(ref float __result, int tile, bool perceivedStatic, int? ticksAbs, StringBuilder explanation)
+        static void Postfix(ref float __result, int tile, int? ticksAbs, StringBuilder explanation)
         {
             Tile tile2 = Find.WorldGrid[tile];
             if (NoMoreImpassableTilesSettings.Instance.OverrideWorldPathfinding
-                && (tile2.biome.impassable || tile2.hilliness == Hilliness.Impassable))
+                && (tile2.biome.impassable || tile2.hilliness == Hilliness.Impassable) && Mathf.Approximately(__result, 1000f))
             {
-                var newValue = OriginalMethod(tile, perceivedStatic, ticksAbs, explanation);
-                __result = newValue < __result ? newValue : __result;
+                if (explanation != null)
+                {
+                    explanation.Clear();
+                    explanation.AppendLine();
+                }
+                explanation?.Append(tile2.biome.LabelCap + ": " + tile2.biome.movementDifficulty.ToStringWithSign("0.#"));
+                float movementDifficulty = NoMoreImpassableTilesSettings.Instance.MovementDifficulty;
+                float computedDifficulty = tile2.biome.movementDifficulty + movementDifficulty;
+                if (explanation != null && movementDifficulty != 0f)
+                {
+                    explanation.AppendLine();
+                    explanation.Append(tile2.hilliness.GetLabelCap() + ": " + movementDifficulty.ToStringWithSign("0.#"));
+                }
+                __result = computedDifficulty + WorldPathGrid.GetCurrentWinterMovementDifficultyOffset(tile, new int?(ticksAbs ?? GenTicks.TicksAbs), explanation);
             }
         }
     }
