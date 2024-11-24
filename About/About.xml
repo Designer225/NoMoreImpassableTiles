@@ -5,7 +5,8 @@
     <url>https://github.com/Designer225/NoMoreImpassableTiles</url>
     <packageId>Designer225.NoMoreImpassableTiles</packageId>
     <supportedVersions>
-		  <li>1.4</li>
+        <li>1.4</li>
+        <li>1.5</li>
     </supportedVersions>
 
     <description>Makes impassable tiles actually usable.</description>

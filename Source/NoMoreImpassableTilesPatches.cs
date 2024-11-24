@@ -46,7 +46,7 @@ namespace NoMoreImpassableTiles
                     explanation.AppendLine();
                     explanation.Append(tile2.hilliness.GetLabelCap() + ": " + movementDifficulty.ToStringWithSign("0.#"));
                 }
-                __result = computedDifficulty + WorldPathGrid.GetCurrentWinterMovementDifficultyOffset(tile, new int?(ticksAbs ?? GenTicks.TicksAbs), explanation);
+                __result = computedDifficulty + WorldPathGrid.GetCurrentWinterMovementDifficultyOffset(tile, ticksAbs ?? GenTicks.TicksAbs, explanation);
             }
         }
     }
@@ -54,77 +54,56 @@ namespace NoMoreImpassableTiles
     [HarmonyPatch(typeof(TileFinder), nameof(TileFinder.IsValidTileForNewSettlement))]
     internal static class TileFinder_IsValidTileForNewSettlement_Patch
     {
-        [HarmonyReversePatch]
-        static bool OriginalMethod(int tile, StringBuilder reason = null)
-        {
-            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-            {
-                var list = instructions.ToList();
-
-                int startIndex = -1, endIndex = -1;
-                int stage = 0;
-                for (int i = 0; i < list.Count; i++)
-                {
-                    if (stage == 0 && list[i].opcode == OpCodes.Ldloc_0)
-                    {
-                        startIndex = i;
-                        stage++;
-                    }
-                    else if (stage == 1 && list[i].opcode == OpCodes.Ldfld) stage++;
-                    else if (stage == 2 && list[i].opcode == OpCodes.Ldc_I4_5) stage++;
-                    else if (stage == 3 && list[i].opcode == OpCodes.Bne_Un_S) stage++;
-                    else if ((stage == 4 || stage == 6) && list[i].opcode == OpCodes.Ldarg_1) stage++;
-                    else if (stage == 5 && list[i].opcode == OpCodes.Brfalse_S) stage++;
-                    else if (stage == 7 && list[i].opcode == OpCodes.Ldstr) stage++;
-                    else if ((stage == 8 || stage == 9) && list[i].opcode == OpCodes.Call) stage++;
-                    else if (stage == 10 && list[i].opcode == OpCodes.Callvirt) stage++;
-                    else if (stage == 11 && list[i].opcode == OpCodes.Pop) stage++;
-                    else if (stage == 12 && list[i].opcode == OpCodes.Ldc_I4_0) stage++;
-                    else if (stage == 13 && list[i].opcode == OpCodes.Ret)
-                    {
-                        endIndex = i + 1;
-                        break;
-                    }
-                    else
-                    {
-                        startIndex = -1;
-                        stage = 0;
-                    }
-                }
-
-                if (startIndex > -1 && endIndex > -1)
-                {
-                    var labels = list[startIndex].ExtractLabels();
-                    list.RemoveRange(startIndex, endIndex - startIndex);
-                    list[startIndex].WithLabels(labels);
-
-                    Log.Message("[NoMoreImpassableTiles] Reverse patching TileFinder.IsValidTileForNewSettlement(): removed impassable tile settlement blocker");
-                    if (NoMoreImpassableTilesSettings.Instance.Debug)
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        foreach (var code in list)
-                            sb.Append($"({code.labels.Join(x => x.GetHashCode().ToString())}) {code.opcode} {(code.operand is Label lb ? lb.GetHashCode() : code.operand)}\n");
-                        Log.Message("[NoMoreImpassableTiles] IL Code:\n" + sb);
-                    }
-                }
-
-                return list.AsEnumerable();
-            }
-
-            _ = Transpiler(null);
-            return false;
-        }
-
         static void Prepare() { Log.Message("[NoMoreImpassableTiles] Patching TileFinder.IsValidTileForNewSettlement() with a postfix"); }
 
         [HarmonyPriority(Priority.First)]
         static void Postfix(ref bool __result, int tile, StringBuilder reason)
         {
-            Tile tile2 = Find.WorldGrid[tile];
-            if (NoMoreImpassableTilesSettings.Instance.AllowImpassableSettlement && tile2.hilliness == Hilliness.Impassable)
+            if (__result) return;
+            
+            var tile1 = Find.WorldGrid[tile];
+            if (!NoMoreImpassableTilesSettings.Instance.AllowImpassableSettlement ||
+                tile1.hilliness != Hilliness.Impassable) return;
+            reason?.Clear();
+            // from decompiled source code of TileFinder.IsValidTileForNewSettlement
+            if (!tile1.biome.canBuildBase)
             {
-                __result = __result ? __result : OriginalMethod(tile, reason);
+                reason?.Append("CannotLandBiome".Translate(tile1.biome.LabelCap));
+                return; // already false
             }
+            if (!tile1.biome.implemented)
+            {
+                reason?.Append("BiomeNotImplemented".Translate() + ": " + tile1.biome.LabelCap);
+                return; // already false
+            }
+            var settlement = Find.WorldObjects.SettlementBaseAt(tile);
+            if (settlement != null)
+            {
+                if (reason != null)
+                {
+                    if (settlement.Faction == null)
+                        reason.Append("TileOccupied".Translate());
+                    else if (settlement.Faction == Faction.OfPlayer)
+                        reason.Append("YourBaseAlreadyThere".Translate());
+                    else
+                        reason.Append("BaseAlreadyThere".Translate((NamedArgument) settlement.Faction.Name));
+                }
+                return; // already false
+            }
+            if (Find.WorldObjects.AnySettlementBaseAtOrAdjacent(tile))
+            {
+                reason?.Append("FactionBaseAdjacent".Translate());
+                return; // already false
+            }
+
+            if (!Find.WorldObjects.AnyMapParentAt(tile) && Current.Game.FindMap(tile) == null &&
+                !Find.WorldObjects.AnyWorldObjectOfDefAt(WorldObjectDefOf.AbandonedSettlement, tile))
+            {
+                __result = true;
+                return;
+            }
+            reason?.Append("TileOccupied".Translate());
+            // already false
         }
     }
 
